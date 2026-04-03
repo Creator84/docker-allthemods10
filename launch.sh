@@ -14,11 +14,23 @@ else
     exit 99
 fi
 
+# Download server files if not present (skip if manually placed)
 if ! [[ -f "Server-Files-$SERVER_VERSION.zip" ]]; then
-    rm -fr config defaultconfigs kubejs mods packmenu Server-Files-* neoforge*
+    curl -fLo "Server-Files-$SERVER_VERSION.zip" "https://mediafilez.forgecdn.net/files/7558/5734/ServerFiles-$SERVER_VERSION.zip" || { rm -f "Server-Files-$SERVER_VERSION.zip"; exit 9; }
+fi
 
-    curl -Lo "Server-Files-$SERVER_VERSION.zip" "https://mediafilez.forgecdn.net/files/7558/5734/ServerFiles-$SERVER_VERSION.zip" || exit 9
-  
+# Validate zip - failed downloads are tiny, real zip is 500MB+
+ZIP_SIZE=$(stat -c%s "Server-Files-$SERVER_VERSION.zip")
+if [[ "$ZIP_SIZE" -lt 1000000 ]]; then
+    echo "Server-Files zip is only ${ZIP_SIZE} bytes, likely a failed download. Removing."
+    rm -f "Server-Files-$SERVER_VERSION.zip"
+    exit 9
+fi
+
+# Install if not already done
+if ! [[ -f ".installed-$SERVER_VERSION" ]]; then
+    rm -fr config defaultconfigs kubejs mods packmenu neoforge*
+
     unzip -u -o "Server-Files-$SERVER_VERSION.zip" -d /data
     DIR_TEST="ServerFiles-$SERVER_VERSION"
     if [[ $(find . -type d -maxdepth 1 | wc -l) -gt 1 ]]; then
@@ -28,9 +40,11 @@ if ! [[ -f "Server-Files-$SERVER_VERSION.zip" ]]; then
         cd /data
         rm -fr "$DIR_TEST"
     fi
-    
-    curl -Lo neoforge-${NEOFORGE_VERSION}-installer.jar https://maven.neoforged.net/releases/net/neoforged/neoforge/$NEOFORGE_VERSION/neoforge-$NEOFORGE_VERSION-installer.jar
+
+    curl -fLo neoforge-${NEOFORGE_VERSION}-installer.jar https://maven.neoforged.net/releases/net/neoforged/neoforge/$NEOFORGE_VERSION/neoforge-$NEOFORGE_VERSION-installer.jar
     java -jar neoforge-${NEOFORGE_VERSION}-installer.jar --installServer
+
+    touch ".installed-$SERVER_VERSION"
 fi
 
 if [[ -n "$JVM_OPTS" ]]; then
