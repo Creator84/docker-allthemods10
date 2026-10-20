@@ -35,7 +35,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/allthemods10:${{ env.SERVER_VERSION }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/atm10-redux:${{ env.SERVER_VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -45,6 +45,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/allthemods10:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/atm10-redux:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
