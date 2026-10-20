@@ -16,7 +16,7 @@ fi
 
 # Download server files if not present (skip if manually placed)
 if ! [[ -f "Server-Files-$SERVER_VERSION.zip" ]]; then
-    curl -fLo "Server-Files-$SERVER_VERSION.zip" "https://mediafilez.forgecdn.net/files/7558/5734/ServerFiles-$SERVER_VERSION.zip" || { rm -f "Server-Files-$SERVER_VERSION.zip"; exit 9; }
+    curl -fLo "Server-Files-$SERVER_VERSION.zip" "https://mediafilez.forgecdn.net/files/9190/182/ServerFiles-$SERVER_VERSION.zip" || { rm -f "Server-Files-$SERVER_VERSION.zip"; exit 9; }
 fi
 
 # Validate zip - failed downloads are tiny, real zip is 500MB+
